@@ -23,16 +23,16 @@
 * [ ] Kivételkezelés és timeout tesztelése gyakorlati feladat
 * [x] [Tesztesetek ismétlése videó](https://e-learning.training360.com/courses/take/szoftverteszteles-java-platformon-2021/lessons/10769719-tesztesetek-ismetlese)
 * [x] [Tesztesetek ismétlése - gyakorlat videó](https://e-learning.training360.com/courses/take/szoftverteszteles-java-platformon-2021/lessons/10769720-tesztesetek-ismetlese-gyakorlat) 
-* [ ] Tesztesetek ismétlése gyakorlati feladat
+* [x] Tesztesetek ismétlése gyakorlati feladat
 * [x] [Paraméterezett tesztek videó](https://e-learning.training360.com/courses/take/szoftverteszteles-java-platformon-2021/lessons/10769721-parameterezett-tesztek)
 * [x] [Paraméterezett tesztek - gyakorlat videó](https://e-learning.training360.com/courses/take/szoftverteszteles-java-platformon-2021/lessons/10769722-parameterezett-tesztek-gyakorlat)
-* [ ] Paraméterezett tesztek gyakorlati feladat
+* [x] Paraméterezett tesztek gyakorlati feladat
 * [x] [JUnit legjobb gyakorlatok videó](https://e-learning.training360.com/courses/take/szoftverteszteles-java-platformon-2021/lessons/10769735-junit-legjobb-gyakorlatok)
 
 ### AssertJ
 * [x] [AssertJ videó](https://e-learning.training360.com/courses/take/szoftverteszteles-java-platformon-2021/lessons/30464085-assertj)
 * [x] [AssertJ - gyakorlat videó](https://e-learning.training360.com/courses/take/szoftverteszteles-java-platformon-2021/lessons/30464090-assertj-gyakorlat)
-* [ ] AssertJ gyakorlati feladat
+* [x] AssertJ gyakorlati feladat
 ### Mockito
 * [x] [Mockito videó](https://e-learning.training360.com/courses/take/szoftverteszteles-java-platformon-2021/lessons/30464183-mockito)
 * [x] [Mockito - gyakorlat videó](https://e-learning.training360.com/courses/take/szoftverteszteles-java-platformon-2021/lessons/30464187-mockito-gyakorlat)
