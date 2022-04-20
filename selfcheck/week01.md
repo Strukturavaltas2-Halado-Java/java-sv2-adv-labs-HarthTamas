@@ -20,7 +20,7 @@
 ### Haladó JUnit
 * [x] [Kivételkezelés és timeout tesztelése videó](https://e-learning.training360.com/courses/take/szoftverteszteles-java-platformon-2021/lessons/10769706-kivetelkezeles-es-timeout-tesztelese)
 * [x] [Kivételkezelés és timeout tesztelése-gyakorlat videó](https://e-learning.training360.com/courses/take/szoftverteszteles-java-platformon-2021/lessons/10769707-kivetelkezeles-es-timeout-tesztelese-gyakorlat)
-* [ ] Kivételkezelés és timeout tesztelése gyakorlati feladat
+* [x] Kivételkezelés és timeout tesztelése gyakorlati feladat
 * [x] [Tesztesetek ismétlése videó](https://e-learning.training360.com/courses/take/szoftverteszteles-java-platformon-2021/lessons/10769719-tesztesetek-ismetlese)
 * [x] [Tesztesetek ismétlése - gyakorlat videó](https://e-learning.training360.com/courses/take/szoftverteszteles-java-platformon-2021/lessons/10769720-tesztesetek-ismetlese-gyakorlat) 
 * [x] Tesztesetek ismétlése gyakorlati feladat
