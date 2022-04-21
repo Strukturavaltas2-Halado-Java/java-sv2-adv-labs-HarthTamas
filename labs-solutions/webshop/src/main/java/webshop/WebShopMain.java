@@ -11,6 +11,7 @@ import java.util.Scanner;
 
 
 public class WebShopMain {
+    private static final String ERROR_COLORSCHEME = "\u001B[30;41m";
     private static final String UNDERLINED_AND_BOLD_COLORSCHEME = "\u001B[4;1m";
     private static final String NOT_UNDERLINED_AND_BOLD_COLORSCHEME = "\u001B[24;22m";
     private static final String FRAME_COLORSCHEME = "\u001B[30;43m";
@@ -77,7 +78,7 @@ public class WebShopMain {
             messagePrint("Helló " + input.get(0) + ", a regisztráció sikeres volt.");
             messagePrint("Extra Kedvezményekért iratkozz fel hírlevelünkre is!");
         } catch (IllegalArgumentException iae) {
-            messagePrint("Hiba a regisztáció során: " + iae.getMessage());
+            errorMessagePrint("Hiba a regisztáció során: " + iae.getMessage());
         }
     }
 
@@ -88,7 +89,7 @@ public class WebShopMain {
             shopService.logIn(input.get(0), input.get(1));
             runShoppingMenu();
         } catch (IllegalArgumentException iae) {
-            messagePrint(iae.getMessage());
+            errorMessagePrint(iae.getMessage());
         }
 
     }
@@ -118,6 +119,24 @@ public class WebShopMain {
             frameAndTextPrint(actual);
             result.add(scanner.nextLine());
         }
+        return result;
+    }
+
+    private List<Long> inputsToLongList(String... texts) {
+        Scanner scanner = new Scanner(System.in);
+        List<Long> result = new ArrayList<>();
+        int i = 0;
+        String input = null;
+        do {
+            frameAndTextPrint(texts[i]);
+            try {
+                input = scanner.nextLine();
+                result.add(Long.parseLong(input));
+                i++;
+            } catch (NumberFormatException nfe) {
+                errorMessagePrint("Hibásan megadott számformátum: " + highlightIt(input));
+            }
+        } while (i <= texts.length-1);
         return result;
     }
 
@@ -168,7 +187,7 @@ public class WebShopMain {
 
     private void printCart() {
         List<String> cartRows = new ArrayList<>();
-        for (Item actual : shopService.getUserCart().contentOfCart()) {
+        for (Item actual : shopService.getContentOfCart()) {
             cartRows.add(String.format("%10s        %-24s%6s Ft%10s db %8s Ft", actual.getProduct().getId(), actual.getProduct().getName(),
                     actual.getProduct().getPrice(), actual.getAmount(), actual.getSumPrice()));
         }
@@ -178,19 +197,18 @@ public class WebShopMain {
         TableForUX cart = new TableForUX(88, cartRows, List.of("A kosár aktuális tartalma", heading));
         cart.print();
     }
-
     private void putToCart() {
         printCart();
         printProducts();
-        List<String> input = inputsToList("Megvásárolni kívánt termék cikkszáma:", "Mennyiség:");
-        long productId = Integer.parseInt(input.get(0));
-        int amount = Integer.parseInt(input.get(1));
+        List<Long> input = inputsToLongList("Megvásárolni kívánt termék cikkszáma:", "Mennyiség:");
+        Long productId = input.get(0);
+        int amount = input.get(1).intValue();
         try {
             shopService.addItem(productId, amount);
             messagePrint(" A(z) " + highlightIt(shopService.getItem(productId).getProduct().getName())
                     + " termékből " + highlightIt(amount) + " darabot betettél a kosárba.");
         } catch (IllegalArgumentException iae) {
-            messagePrint(iae.getMessage() + " A " + highlightIt((int) productId) + " cikkszámú termék nem található a webáruházban!");
+            errorMessagePrint(iae.getMessage() + " A " + highlightIt(productId) + " cikkszámú termék nem található a webáruházban!");
         }
     }
 
@@ -199,10 +217,14 @@ public class WebShopMain {
         if (checkIfCartIsEmptyAndMessage("Üres a kosár - nem lehetséges kivenni belőle terméket!")) {
             return;
         }
-        long productId = Integer.parseInt(inputsToList("Törölni kívánt termék cikkszáma:").get(0));
-        String productToDelete = shopService.getItem(productId).getProduct().getName();
-        shopService.removeItem(productId);
-        messagePrint(" A(z) " + highlightIt(productToDelete) + " termékeket kivetted a kosárból.");
+        long productId = inputsToLongList("Törölni kívánt termék cikkszáma:").get(0);
+        try {
+            String productToDelete = shopService.getItem(productId).getProduct().getName();
+            shopService.removeItem(productId);
+            messagePrint(" A(z) " + highlightIt(productToDelete) + " termékeket kivetted a kosárból.");
+        } catch (IllegalArgumentException iae) {
+            errorMessagePrint("Hiba a termék eltávolítása során! " + iae.getMessage() + highlightIt(productId) + " id.");
+        }
     }
 
     private void increaseAmount() {
@@ -210,12 +232,16 @@ public class WebShopMain {
         if (checkIfCartIsEmptyAndMessage("Üres a kosár - nem lehetséges növelni benne a termékek darabszámát!")) {
             return;
         }
-        List<String> input = inputsToList("Melyik cikkszámú termék mennyiségét növelnéd?", "Mennyiség:");
-        long productId = Integer.parseInt(input.get(0));
-        int amount = Integer.parseInt(input.get(1));
-        shopService.increaseAmount(productId, amount);
-        messagePrint(" A(z) " + highlightIt(shopService.getItem(productId).getProduct().getName()) + " termék mennyiségét "
-                + highlightIt(amount) + " darabbal növelted a kosárban.");
+        List<Long> input = inputsToLongList("Melyik cikkszámú termék mennyiségét növelnéd?", "Mennyiség:");
+        long productId = input.get(0);
+        int amount = input.get(1).intValue();
+        try {
+            shopService.increaseAmount(productId, amount);
+            messagePrint(" A(z) " + highlightIt(shopService.getItem(productId).getProduct().getName()) + " termék mennyiségét "
+                    + highlightIt(amount) + " darabbal növelted a kosárban.");
+        } catch (IllegalArgumentException iae) {
+            errorMessagePrint("Hiba a termék darabszámának növelése során! " + iae.getMessage() + highlightIt(productId) + " id.");
+        }
     }
 
     private void decreaseAmount() {
@@ -223,13 +249,17 @@ public class WebShopMain {
         if (checkIfCartIsEmptyAndMessage("Üres a kosár - nem lehetséges csökkenteni benne a termékek darabszámát!")) {
             return;
         }
-        List<String> input = inputsToList("Melyik cikkszámú termék mennyiségét csökkentenéd?", "Mennyiség:");
-        long productId = Integer.parseInt(input.get(0));
-        int amount = Integer.parseInt(input.get(1));
-        String productToDecrease = shopService.getItem(productId).getProduct().getName();
-        shopService.decreaseAmount(productId, amount);
-        messagePrint(" A(z) " + highlightIt(productToDecrease) + " termék mennyiségét "
-                + highlightIt(amount) + " darabbal csökkentetted a kosárban.");
+        List<Long> input = inputsToLongList("Melyik cikkszámú termék mennyiségét csökkentenéd?", "Mennyiség:");
+        long productId = input.get(0);
+        int amount = input.get(1).intValue();
+        try {
+            String productToDecrease = shopService.getItem(productId).getProduct().getName();
+            shopService.decreaseAmount(productId, amount);
+            messagePrint(" A(z) " + highlightIt(productToDecrease) + " termék mennyiségét "
+                    + highlightIt(amount) + " darabbal csökkentetted a kosárban.");
+        } catch (IllegalArgumentException iae) {
+            errorMessagePrint("Hiba a termék darabszámának csökkentése során! " + iae.getMessage() + highlightIt(productId) + " id.");
+        }
     }
 
     private void finalizeOrder() {
@@ -245,10 +275,10 @@ public class WebShopMain {
     }
 
     private boolean checkIfCartIsEmptyAndMessage(String s) {
-        if (shopService.getContentOfCart().size() == 0) {
+        if (shopService.getContentOfCart().isEmpty()) {
             frameAndTextPrint("");
             System.out.println();
-            messagePrint(s);
+            errorMessagePrint(s);
             return true;
         }
         return false;
@@ -256,6 +286,11 @@ public class WebShopMain {
 
     private void frameAndTextPrint(String text) {
         System.out.print(FRAME_COLORSCHEME + " " + LINE_INPUT_COLORSCHEME + " " + text + " ");
+    }
+
+
+    private void errorMessagePrint(String text) {
+        System.out.println(ERROR_COLORSCHEME + " " + text + " " + LINE_INPUT_COLORSCHEME);
     }
 
     private void messagePrint(String text) {
@@ -266,7 +301,7 @@ public class WebShopMain {
         return UNDERLINED_AND_BOLD_COLORSCHEME + text + NOT_UNDERLINED_AND_BOLD_COLORSCHEME;
     }
 
-    private String highlightIt(int number) {
+    private String highlightIt(long number) {
         return UNDERLINED_AND_BOLD_COLORSCHEME + number + NOT_UNDERLINED_AND_BOLD_COLORSCHEME;
     }
 }

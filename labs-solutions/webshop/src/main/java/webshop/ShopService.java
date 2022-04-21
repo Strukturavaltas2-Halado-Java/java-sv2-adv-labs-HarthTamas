@@ -54,7 +54,9 @@ public class ShopService {
     }
 
     public Item getItem(long id) {
-        return user.getCart().getItems().stream().filter(item -> id == item.getProduct().getId()).toList().get(0);
+        return user.getCart().getItems().stream()
+                .filter(item -> id == item.getProduct().getId()).findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Unable to find item in cart with "));
     }
 
     public void modifyAmount(long id, int amount) {
@@ -136,7 +138,7 @@ public class ShopService {
     }
 
     public List<Item> getContentOfCart() {
-        return user.getCart().contentOfCart();
+        return user.getCart().getItems();
     }
 
     public int getTotalPrice() {

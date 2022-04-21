@@ -1,6 +1,7 @@
 package webshop;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Cart {
@@ -8,23 +9,17 @@ public class Cart {
     private List<Item> items = new ArrayList<>();
 
     public List<Item> getItems() {
-        return items;
-    }
-
-    public List<Item> contentOfCart() {
-        return items;
-    }
-
-    public List<String> contentOfCartStringFormat() {
-        List<String> contentOfCart = new ArrayList<>();
-        for (Item item: items) {
-            contentOfCart.add(String.format("%d %s %d", item.getProduct().getId(), item.getProduct().getName(), item.getAmount()));
-        }
-        return contentOfCart;
+        return Collections.unmodifiableList(items);
     }
 
     public void addItem(Item item) {
-        items.add(item);
+        if (items.stream().noneMatch(i -> i.getProduct().equals(item.getProduct()))) {
+            items.add(item);
+        } else {
+            items.stream()
+                    .filter(i -> i.getProduct().getName().equals(item.getProduct().getName()))
+                    .toList().get(0).modifyAmount(item.getAmount());
+        }
     }
 
     public void removeItem(Item item) {
