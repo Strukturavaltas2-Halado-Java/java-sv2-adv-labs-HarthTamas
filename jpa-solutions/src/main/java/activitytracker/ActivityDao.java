@@ -23,7 +23,7 @@ public class ActivityDao {
 
     public List<Activity> listActivities() {
         EntityManager em = factory.createEntityManager();
-        List<Activity> result = em.createQuery("select a from Activity a",Activity.class).getResultList() ;
+        List<Activity> result = em.createQuery("select a from Activity a order by a.description",Activity.class).getResultList() ;
         em.close();
         return result;
     }
