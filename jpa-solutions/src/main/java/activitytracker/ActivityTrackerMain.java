@@ -26,6 +26,7 @@ public class ActivityTrackerMain {
         em.getTransaction().begin();
         activity.setDescription("Nem is körbe tekertünk, hanem egyenesen");
         em.getTransaction().commit();
+
         activity = em.find(Activity.class, id);
         System.out.println(activity);
 

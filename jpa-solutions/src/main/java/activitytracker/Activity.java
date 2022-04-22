@@ -9,16 +9,16 @@ public class Activity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
     @Column(name="type")
-    ActivityType type;
+    private ActivityType type;
 
     @Column(name="description")
-    String description;
+    private String description;
 
     @Column(name="start_time")
-    LocalDateTime startTime;
+    private LocalDateTime startTime;
 
 
     public Activity() {
