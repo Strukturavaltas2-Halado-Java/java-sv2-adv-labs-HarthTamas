@@ -13,6 +13,7 @@ import java.time.Month;
 import java.util.List;
 import java.util.Locale;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ActivityDaoTest {
@@ -51,9 +52,9 @@ class ActivityDaoTest {
         em.getTransaction().commit();
 
         List<Activity> activities = activityDao.listActivities();
-        List<String> activityDescriptions =  activities.stream().map(Activity::getDescription).toList();
+        List<String> activityDescriptions = activities.stream().map(Activity::getDescription).toList();
 
-        assertEquals(List.of("Futás előre","Túra a hegyekben"), activityDescriptions);
+        assertEquals(List.of("Futás előre", "Túra a hegyekben"), activityDescriptions);
         em.close();
     }
 
@@ -67,12 +68,23 @@ class ActivityDaoTest {
 
         Activity activityFound = activityDao.findActivityById(id);
         assertEquals(activityRunning.getDescription(), activityFound.getDescription());
+//        assertj
+        assertThat(activityRunning.getDescription().equals(activityFound.getDescription()));
 
         em.close();
     }
 
     @Test
     void testDeleteActivity() {
+        Activity activityRunning = new Activity(ActivityType.RUNNING, "Futás előre", LocalDateTime.of(2022, Month.APRIL, 18, 10, 20));
+        activityDao.saveActivity(activityRunning);
+        Long id = activityRunning.getId();
+        activityDao.deleteActivity(id);
+
+        List<Activity> activities = activityDao.listActivities();
+        assertTrue(activities.isEmpty());
+
+
     }
 
 }

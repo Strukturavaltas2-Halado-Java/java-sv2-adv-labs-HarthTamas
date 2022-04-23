@@ -38,7 +38,8 @@ public class ActivityDao {
     public void deleteActivity(long id) {
         EntityManager em = factory.createEntityManager();
         em.getTransaction().begin();
-        em.remove(findActivityById(id));
+        Activity activity = em.getReference(Activity.class,id);
+        em.remove(activity);
         em.getTransaction().commit();
         em.close();
     }
