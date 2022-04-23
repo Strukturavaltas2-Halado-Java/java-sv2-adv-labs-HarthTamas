@@ -1,5 +1,7 @@
 package activitytracker;
 
+import org.hibernate.annotations.GeneratorType;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -8,7 +10,8 @@ import java.time.LocalDateTime;
 public class Activity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator = "activity id generator")
+    @TableGenerator(name ="activity id generator", table= "act_id_gen", pkColumnName = "id_gen", valueColumnName = "id_val")
     private Long id;
 
     @Column(name="activity_type",nullable = false, length = 20)
