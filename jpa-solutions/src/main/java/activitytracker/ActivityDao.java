@@ -3,6 +3,7 @@ package activitytracker;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class ActivityDao {
@@ -23,14 +24,14 @@ public class ActivityDao {
 
     public List<Activity> listActivities() {
         EntityManager em = factory.createEntityManager();
-        List<Activity> result = em.createQuery("select a from Activity a order by a.description",Activity.class).getResultList() ;
+        List<Activity> result = em.createQuery("select a from Activity a order by a.description", Activity.class).getResultList();
         em.close();
         return result;
     }
 
     public Activity findActivityById(long id) {
         EntityManager em = factory.createEntityManager();
-        Activity activity = em.find(Activity.class,id);
+        Activity activity = em.find(Activity.class, id);
         em.close();
         return activity;
     }
@@ -38,10 +39,18 @@ public class ActivityDao {
     public void deleteActivity(long id) {
         EntityManager em = factory.createEntityManager();
         em.getTransaction().begin();
-        Activity activity = em.getReference(Activity.class,id);
+        Activity activity = em.getReference(Activity.class, id);
         em.remove(activity);
         em.getTransaction().commit();
         em.close();
     }
 
+    public void updateActivity(long id, String description) {
+        EntityManager em = factory.createEntityManager();
+        em.getTransaction().begin();
+        Activity activity = em.find(Activity.class,id);
+        activity.setDescription(description);
+        em.getTransaction().commit();
+        em.close();
+    }
 }

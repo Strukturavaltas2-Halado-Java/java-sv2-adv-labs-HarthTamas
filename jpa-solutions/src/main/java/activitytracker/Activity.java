@@ -6,24 +6,30 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name="activities")
+@Table(name = "activities")
 public class Activity {
 
     @Id
-    @GeneratedValue(generator = "activity id generator")
-    @TableGenerator(name ="activity id generator", table= "act_id_gen", pkColumnName = "id_gen", valueColumnName = "id_val")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(generator = "activity id generator")
+//    @TableGenerator(name = "activity id generator", table = "act_id_gen", pkColumnName = "id_gen", valueColumnName = "id_val")
     private Long id;
 
-    @Column(name="activity_type",nullable = false, length = 20)
+    @Column(name = "activity_type", nullable = false, length = 20)
     @Enumerated(EnumType.STRING)
     private ActivityType type;
 
-    @Column(name="description", nullable = false, length = 200)
+    @Column(name = "description", nullable = false, length = 200)
     private String description;
 
-    @Column(name="start_time", nullable = false)
+    @Column(name = "start_time", nullable = false)
     private LocalDateTime startTime;
 
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     public Activity() {
     }
@@ -32,6 +38,16 @@ public class Activity {
         this.type = type;
         this.description = description;
         this.startTime = startTime;
+    }
+
+    @PreUpdate
+    public void setUpdatedAtToCurrentTime() {
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PrePersist
+    public void setCreatedAtToCurrentTime() {
+        createdAt = LocalDateTime.now();
     }
 
     public Long getId() {
@@ -66,6 +82,23 @@ public class Activity {
         this.type = type;
     }
 
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
     @Override
     public String toString() {
         return "Activity{" +
@@ -73,6 +106,8 @@ public class Activity {
                 ", type=" + type +
                 ", description='" + description + '\'' +
                 ", startTime=" + startTime +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
                 '}';
     }
 }
