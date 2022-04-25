@@ -68,9 +68,7 @@ class ActivityDaoTest {
         Long id = activityRunning.getId();
 
         Activity activityFound = activityDao.findActivityById(id);
-        assertEquals(activityRunning.getDescription(), activityFound.getDescription());
-//assertj
-        assertThat(activityRunning.getDescription().equals(activityFound.getDescription()));
+        assertThat(activityRunning.getDescription()).isEqualTo(activityFound.getDescription());
 
         em.close();
     }
@@ -101,4 +99,16 @@ class ActivityDaoTest {
         assertEquals(ActivityType.RUNNING, expected.getType());
         assertThat(expected.getStartTime()).isEqualTo(LocalDateTime.of(2022,Month.APRIL,18,10,20));
     }
+
+    @Test
+    void testFindActivityByIdWithLabels() {
+        Activity activityRunning = new Activity(ActivityType.RUNNING, "Futás előre", LocalDateTime.of(2022, Month.APRIL, 18, 10, 20));
+        activityRunning.setLabels(List.of("futás", "valamerre"));
+        activityDao.saveActivity(activityRunning);
+
+        Activity activityFound = activityDao.findActivityByIdWithLabels(activityRunning.getId());
+        assertThat(activityFound.getLabels().get(0)).isEqualTo("futás");
+        assertThat(activityFound.getLabels().get(1)).isEqualTo("valamerre");
+    }
+
 }
