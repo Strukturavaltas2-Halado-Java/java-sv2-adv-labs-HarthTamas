@@ -3,6 +3,7 @@
 
 ## Adatbázis programozás Java nyelven, JPA - Alapok
 
+
 ### JPA Első rész
 
 * [x] [Egyszerű mentés JPA-val videó](https://e-learning.training360.com/courses/take/adatbazis-programozas-jpa-technologiaval/lessons/25790918-egyszeru-mentes-jpa-val)
