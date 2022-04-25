@@ -136,7 +136,7 @@ public class WebShopMain {
             } catch (NumberFormatException nfe) {
                 errorMessagePrint("Hibásan megadott számformátum: " + highlightIt(input));
             }
-        } while (i <= texts.length-1);
+        } while (i <= texts.length - 1);
         return result;
     }
 
@@ -154,19 +154,33 @@ public class WebShopMain {
                     printCart();
                     break;
                 case 3:
+                    printCart();
+                    printProducts();
                     putToCart();
                     break;
                 case 4:
-                    deleteFromCart();
+                    printCart();
+                    if (!checkIfCartIsEmptyAndMessage()) {
+                        deleteFromCart();
+                    }
                     break;
                 case 5:
-                    increaseAmount();
+                    printCart();
+                    if (!checkIfCartIsEmptyAndMessage()) {
+                        increaseAmount();
+                    }
                     break;
                 case 6:
-                    decreaseAmount();
+                    printCart();
+                    if (!checkIfCartIsEmptyAndMessage()) {
+                        decreaseAmount();
+                    }
                     break;
                 case 7:
-                    finalizeOrder();
+                    printCart();
+                    if (!checkIfCartIsEmptyAndMessage()) {
+                        finalizeOrder();
+                    }
                     break;
                 case 8:
                     exit = true;
@@ -197,9 +211,8 @@ public class WebShopMain {
         TableForUX cart = new TableForUX(88, cartRows, List.of("A kosár aktuális tartalma", heading));
         cart.print();
     }
+
     private void putToCart() {
-        printCart();
-        printProducts();
         List<Long> input = inputsToLongList("Megvásárolni kívánt termék cikkszáma:", "Mennyiség:");
         Long productId = input.get(0);
         int amount = input.get(1).intValue();
@@ -213,10 +226,6 @@ public class WebShopMain {
     }
 
     private void deleteFromCart() {
-        printCart();
-        if (checkIfCartIsEmptyAndMessage("Üres a kosár - nem lehetséges kivenni belőle terméket!")) {
-            return;
-        }
         long productId = inputsToLongList("Törölni kívánt termék cikkszáma:").get(0);
         try {
             String productToDelete = shopService.getItem(productId).getProduct().getName();
@@ -228,10 +237,6 @@ public class WebShopMain {
     }
 
     private void increaseAmount() {
-        printCart();
-        if (checkIfCartIsEmptyAndMessage("Üres a kosár - nem lehetséges növelni benne a termékek darabszámát!")) {
-            return;
-        }
         List<Long> input = inputsToLongList("Melyik cikkszámú termék mennyiségét növelnéd?", "Mennyiség:");
         long productId = input.get(0);
         int amount = input.get(1).intValue();
@@ -245,17 +250,18 @@ public class WebShopMain {
     }
 
     private void decreaseAmount() {
-        printCart();
-        if (checkIfCartIsEmptyAndMessage("Üres a kosár - nem lehetséges csökkenteni benne a termékek darabszámát!")) {
-            return;
-        }
         List<Long> input = inputsToLongList("Melyik cikkszámú termék mennyiségét csökkentenéd?", "Mennyiség:");
         long productId = input.get(0);
         int amount = input.get(1).intValue();
         try {
-            String productToDecrease = shopService.getItem(productId).getProduct().getName();
+            String productNameToDecrease = shopService.getItem(productId).getProduct().getName();
+            if (shopService.getItem(productId).getAmount() < amount) {
+                errorMessagePrint(" A kosárban csak "+  highlightIt(shopService.getItem(productId).getAmount()) + " darab "
+                        + highlightIt(productNameToDecrease) + " van, nem csökkentheted a mennyiségét "+highlightIt(amount)+" darabbal.");
+                amount = shopService.getItem(productId).getAmount();
+            }
             shopService.decreaseAmount(productId, amount);
-            messagePrint(" A(z) " + highlightIt(productToDecrease) + " termék mennyiségét "
+            messagePrint(" A(z) " + highlightIt(productNameToDecrease) + " termék mennyiségét "
                     + highlightIt(amount) + " darabbal csökkentetted a kosárban.");
         } catch (IllegalArgumentException iae) {
             errorMessagePrint("Hiba a termék darabszámának csökkentése során! " + iae.getMessage() + highlightIt(productId) + " id.");
@@ -263,22 +269,20 @@ public class WebShopMain {
     }
 
     private void finalizeOrder() {
-        printCart();
-        if (checkIfCartIsEmptyAndMessage("Üres a kosár - nem lehetséges a megrendelés véglegesítése!")) {
-            return;
-        }
         if (inputsToList("Véglegesíted a rendelést? (i/n)").get(0).equals("i")) {
             shopService.order();
             messagePrint("Köszönjük a megrendelést!");
             messagePrint("Iratkozz fel hírlevelünkre, elárasztunk spamekkel!");
+        } else {
+            messagePrint("A megrendelést nem véglegesítettük!");
         }
     }
 
-    private boolean checkIfCartIsEmptyAndMessage(String s) {
+    private boolean checkIfCartIsEmptyAndMessage() {
         if (shopService.getContentOfCart().isEmpty()) {
             frameAndTextPrint("");
             System.out.println();
-            errorMessagePrint(s);
+            errorMessagePrint("Üres a kosár - nem lehetséges a művelet végrehajtása!");
             return true;
         }
         return false;
