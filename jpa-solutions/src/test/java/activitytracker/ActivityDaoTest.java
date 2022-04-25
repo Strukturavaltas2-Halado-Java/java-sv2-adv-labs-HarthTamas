@@ -88,6 +88,7 @@ class ActivityDaoTest {
     void testSaveAndUpdate() {
         Activity activityRunning = new Activity(ActivityType.RUNNING, "Futás előre", LocalDateTime.of(2022, Month.APRIL, 18, 10, 20));
         activityDao.saveActivity(activityRunning);
+        System.out.println("Created at: "+ activityRunning.getCreatedAt());
         assertTrue(activityRunning.getCreatedAt() != null);
 
         Long id = activityRunning.getId();
