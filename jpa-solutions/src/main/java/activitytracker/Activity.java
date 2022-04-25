@@ -5,15 +5,16 @@ import org.hibernate.annotations.GeneratorType;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "activities")
 public class Activity {
 
     @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @GeneratedValue(generator = "activity id generator")
-    @TableGenerator(name = "activity id generator", table = "act_id_gen", pkColumnName = "id_gen", valueColumnName = "id_val")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(generator = "activity id generator")
+//    @TableGenerator(name = "activity id generator", table = "act_id_gen", pkColumnName = "id_gen", valueColumnName = "id_val")
     private Long id;
 
     @Column(name = "activity_type", nullable = false, length = 20)
@@ -33,7 +34,7 @@ public class Activity {
     private LocalDateTime updatedAt;
 
     @ElementCollection
-    @CollectionTable(name="labels", joinColumns = @JoinColumn(name = "id_val"))
+    @CollectionTable(name = "labels", joinColumns = @JoinColumn(name = "id_val"))
     @Column(name = "label")
     private List<String> labels;
 
