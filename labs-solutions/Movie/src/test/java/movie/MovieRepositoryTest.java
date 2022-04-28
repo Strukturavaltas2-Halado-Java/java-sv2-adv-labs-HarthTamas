@@ -8,11 +8,11 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import java.time.LocalDate;
-import java.util.Date;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class MovieRepositoryTest {
 
@@ -42,6 +42,20 @@ class MovieRepositoryTest {
         Optional<Movie> result = repository.findByTitle("Papirkutyák");
 
         assertThat(result.get().getLength()).isEqualTo(89);
+    }
+
+    @Test
+    void testFindByTitleWithRatings() {
+        Movie movie = new Movie("Papirkutyák", LocalDate.of(2009, 02,19),89);
+        movie.addRating(new Rating(4.5,"Kuplung"));
+        movie.addRating(new Rating(4.5,"Csumpi"));
+
+        repository.saveMovie(movie);
+
+        List<Movie> result = repository.findByTitleWithRatings("Papírkutyák");
+        assertThat(result.get(0).getLength()).isEqualTo(89);
+        assertThat(result.get(0).getRatings().size()).isEqualTo(2);
+        assertThat(result.get(0).getRatings().stream().map(Rating::getUsername).toList()).isEqualTo(List.of("Kuplung","Csumpi"));
     }
 
 }

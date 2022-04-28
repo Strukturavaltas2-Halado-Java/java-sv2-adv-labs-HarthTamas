@@ -2,7 +2,9 @@ package movie;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "movies")
@@ -12,13 +14,13 @@ public class Movie {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
+    @Column(name = "date_of_release")
     private LocalDate releaseDate;
     private int length;
 
-    @ElementCollection(targetClass = Rating.class)
-    @CollectionTable(name="ratings", joinColumns = @JoinColumn(name="movie-id"))
-    @Column(name = "rating")
-    private List<Rating> ratings;
+    @ElementCollection
+    @CollectionTable(name="ratings", joinColumns = @JoinColumn(name="movie_id"))
+    private List<Rating> ratings = new ArrayList<>();
 
 
     public void addRating(Rating rating) {

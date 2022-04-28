@@ -2,6 +2,7 @@ package movie;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import java.util.List;
 import java.util.Optional;
 
 public class MovieRepository {
@@ -11,6 +12,7 @@ public class MovieRepository {
     public MovieRepository(EntityManagerFactory factory) {
         this.factory = factory;
     }
+
     public Movie saveMovie(Movie movie) {
         EntityManager em = factory.createEntityManager();
         em.getTransaction().begin();
@@ -23,19 +25,19 @@ public class MovieRepository {
     public Optional<Movie> findByTitle(String title) {
         EntityManager em = factory.createEntityManager();
         Movie movie = em.createQuery("select m from Movie m where m.title = :title", Movie.class)
-                .setParameter("title",title)
+                .setParameter("title", title)
                 .getSingleResult();
         em.close();
         return Optional.of(movie);
     }
 
-    public Optional<Movie> findByTitleWithRatings(String title) {
+    public List<Movie> findByTitleWithRatings(String title) {
         EntityManager em = factory.createEntityManager();
-        Movie movie = em.createQuery("select m from Movie m left join fetch m.ratings where m.title = :title", Movie.class)
-                .setParameter("title",title)
-                .getSingleResult();
+        List<Movie> movies = em.createQuery("select m from Movie m left join fetch m.ratings where m.title = :title", Movie.class)
+                .setParameter("title", title)
+                .getResultList();
         em.close();
-        return Optional.of(movie);
+        return movies;
     }
 
 }
