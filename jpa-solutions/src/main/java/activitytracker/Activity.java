@@ -13,8 +13,6 @@ public class Activity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @GeneratedValue(generator = "activity id generator")
-//    @TableGenerator(name = "activity id generator", table = "act_id_gen", pkColumnName = "id_gen", valueColumnName = "id_val")
     private Long id;
 
     @Column(name = "activity_type", nullable = false, length = 20)
@@ -38,6 +36,11 @@ public class Activity {
     @Column(name = "label")
     private List<String> labels;
 
+
+    @OneToMany(cascade = CascadeType.PERSIST)
+//    @OrderColumn(name = "time")
+    private Set<TrackPoint> trackPoints;
+
     public Activity() {
     }
 
@@ -50,7 +53,22 @@ public class Activity {
     @PreUpdate
     public void setUpdatedAtToCurrentTime() {
         updatedAt = LocalDateTime.now();
+    }
 
+    public Set<TrackPoint> getTrackPoints() {
+        return trackPoints;
+    }
+
+    public void setTrackPoints(Set<TrackPoint> trackPoints) {
+        this.trackPoints = trackPoints;
+    }
+
+    public List<String> getLabels() {
+        return labels;
+    }
+
+    public void setLabels(List<String> labels) {
+        this.labels = labels;
     }
 
     @PrePersist
@@ -64,14 +82,6 @@ public class Activity {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public List<String> getLabels() {
-        return labels;
-    }
-
-    public void setLabels(List<String> labels) {
-        this.labels = labels;
     }
 
     public LocalDateTime getStartTime() {

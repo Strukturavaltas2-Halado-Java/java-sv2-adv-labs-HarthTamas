@@ -1,12 +1,11 @@
-package main.java.movie;
+package movie;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
+@Table(name = "movies")
 public class Movie {
 
     @Id
@@ -15,6 +14,41 @@ public class Movie {
     private String title;
     private LocalDate releaseDate;
     private int length;
+
+    @ElementCollection(targetClass = Rating.class)
+    @CollectionTable(name="ratings", joinColumns = @JoinColumn(name="movie-id"))
+    @Column(name = "rating")
+    private List<Rating> ratings;
+
+
+    public void addRating(Rating rating) {
+        ratings.add(rating);
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setReleaseDate(LocalDate releaseDate) {
+        this.releaseDate = releaseDate;
+    }
+
+    public void setLength(int length) {
+        this.length = length;
+    }
+
+
+    public List<Rating> getRatings() {
+        return ratings;
+    }
+
+    public void setRatings(List<Rating> ratings) {
+        this.ratings = ratings;
+    }
 
     public Movie(String title, LocalDate releaseDate, int length) {
         this.title = title;
@@ -27,6 +61,19 @@ public class Movie {
         this.title = title;
         this.releaseDate = releaseDate;
         this.length = length;
+    }
+
+
+    public Movie(Long id, String title, LocalDate releaseDate, int length, List<Rating> ratings) {
+        this.id = id;
+        this.title = title;
+        this.releaseDate = releaseDate;
+        this.length = length;
+        this.ratings = ratings;
+    }
+
+    public Movie() {
+
     }
 
     public String getTitle() {

@@ -1,4 +1,4 @@
-package main.java.movie;
+package movie;
 
 import java.time.LocalDate;
 import java.util.Optional;

@@ -110,4 +110,14 @@ class ActivityDaoTest {
         assertThat(activityFound.getLabels().get(0)).isEqualTo("futás");
         assertThat(activityFound.getLabels().get(1)).isEqualTo("valamerre");
     }
+
+    @Test
+    void testTrackPoint() {
+        TrackPoint tr1 = new TrackPoint(45.454,15.56);
+        TrackPoint tr2 = new TrackPoint(5.454,-45.56);
+
+        Activity activity = new Activity(ActivityType.RUNNING, "Futás előre", LocalDateTime.of(2022, Month.APRIL, 18, 10, 20));
+        activity.setTrackPoints(Set.of(tr1,tr2));
+        activityDao.saveActivity(activity);
+    }
 }
