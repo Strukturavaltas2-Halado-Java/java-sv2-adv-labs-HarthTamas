@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
-@Table(name="trackpoints")
+@Table(name = "track_points")
 public class TrackPoint {
 
     @Id
@@ -17,10 +17,20 @@ public class TrackPoint {
 
     private double latitude;
 
+    @ManyToOne
+    @JoinColumn(name = "act_id")
+    Activity activity;
+
     public TrackPoint() {
     }
 
     public TrackPoint(double longitude, double latitude) {
+        this.longitude = longitude;
+        this.latitude = latitude;
+    }
+
+    public TrackPoint(LocalDate time, double longitude, double latitude) {
+        this.time = time;
         this.longitude = longitude;
         this.latitude = latitude;
     }
@@ -55,6 +65,14 @@ public class TrackPoint {
 
     public void setLatitude(double latitude) {
         this.latitude = latitude;
+    }
+
+    public Activity getActivity() {
+        return activity;
+    }
+
+    public void setActivity(Activity activity) {
+        this.activity = activity;
     }
 
     @Override

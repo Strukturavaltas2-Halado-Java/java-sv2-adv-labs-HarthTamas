@@ -1,9 +1,8 @@
 package activitytracker;
 
-import org.hibernate.annotations.GeneratorType;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -37,9 +36,9 @@ public class Activity {
     private List<String> labels;
 
 
-    @OneToMany(cascade = CascadeType.PERSIST)
-//    @OrderColumn(name = "time")
-    private Set<TrackPoint> trackPoints;
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, mappedBy = "activity")
+    @OrderBy("time")
+    private List<TrackPoint> trackPoints = new ArrayList<>();
 
     public Activity() {
     }
@@ -55,11 +54,11 @@ public class Activity {
         updatedAt = LocalDateTime.now();
     }
 
-    public Set<TrackPoint> getTrackPoints() {
+    public List<TrackPoint> getTrackPoints() {
         return trackPoints;
     }
 
-    public void setTrackPoints(Set<TrackPoint> trackPoints) {
+    public void setTrackPoints(List<TrackPoint> trackPoints) {
         this.trackPoints = trackPoints;
     }
 
@@ -125,6 +124,14 @@ public class Activity {
         this.updatedAt = updatedAt;
     }
 
+    public void addTrackPoint(TrackPoint trackPoint) {
+        if (trackPoints == null) {
+            trackPoint = new TrackPoint();
+        }
+        trackPoints.add(trackPoint);
+        trackPoint.setActivity(this);
+    }
+
     @Override
     public String toString() {
         return "Activity{" +
@@ -134,6 +141,8 @@ public class Activity {
                 ", startTime=" + startTime +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
+                ", labels=" + labels +
+                ", trackPoints=" + trackPoints +
                 '}';
     }
 }
