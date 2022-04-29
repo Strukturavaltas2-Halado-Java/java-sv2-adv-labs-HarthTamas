@@ -2,6 +2,7 @@ package activitytracker;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import javax.persistence.EntityManager;
@@ -64,7 +65,7 @@ class ActivityDaoTest {
         Activity activityRunning = new Activity(ActivityType.RUNNING, "Futás előre", LocalDateTime.of(2022, Month.APRIL, 18, 10, 20));
         activityDao.saveActivity(activityRunning);
 
-        Long id = activityRunning.getId() +1;
+        Long id = activityRunning.getId() + 1;
         Activity activityFound = activityDao.findActivityById(id);
         System.out.println(activityFound);
 //        assertThat(activityRunning.getDescription()).isEqualTo(activityFound.getDescription());
@@ -95,7 +96,7 @@ class ActivityDaoTest {
         Activity expected = activityDao.findActivityById(id);
         assertEquals("Futás hátra", expected.getDescription());
         assertEquals(ActivityType.RUNNING, expected.getType());
-        assertThat(expected.getStartTime()).isEqualTo(LocalDateTime.of(2022,Month.APRIL,18,10,20));
+        assertThat(expected.getStartTime()).isEqualTo(LocalDateTime.of(2022, Month.APRIL, 18, 10, 20));
     }
 
     @Test
@@ -111,8 +112,8 @@ class ActivityDaoTest {
 
     @Test
     void testTrackPoint() {
-        TrackPoint tr1 = new TrackPoint(45.454,15.56);
-        TrackPoint tr2 = new TrackPoint(5.454,-45.56);
+        TrackPoint tr1 = new TrackPoint(45.454, 15.56);
+        TrackPoint tr2 = new TrackPoint(5.454, -45.56);
         Activity activity = new Activity(ActivityType.RUNNING, "Futás előre", LocalDateTime.of(2022, Month.APRIL, 18, 10, 20));
         activity.addTrackPoint(tr1);
         activity.addTrackPoint(tr2);
@@ -126,16 +127,16 @@ class ActivityDaoTest {
     void testAddTrackPoints() {
         Activity activity = new Activity(ActivityType.RUNNING, "Futás előre", LocalDateTime.of(2022, Month.APRIL, 18, 10, 20));
         activityDao.saveActivity(activity);
-        activityDao.addTrackPoint(activity.getId(), new TrackPoint(0.43,-8.89));
+        activityDao.addTrackPoint(activity.getId(), new TrackPoint(0.43, -8.89));
         Activity activityFound = activityDao.findActivityByIdWithTrackPoints(activity.getId());
         assertThat(activityFound.getTrackPoints().get(0).getLatitude()).isEqualTo(-8.89);
     }
 
     @Test
     void testTrackPointOrder() {
-        TrackPoint tr1 = new TrackPoint(LocalDate.of(2022,12,12),45.454,15.56);
-        TrackPoint tr2 = new TrackPoint(LocalDate.of(2019,1,5),5.454,-45.56);
-        TrackPoint tr3= new TrackPoint(LocalDate.of(2020,2,12),45.454,5.56);
+        TrackPoint tr1 = new TrackPoint(LocalDate.of(2022, 12, 12), 45.454, 15.56);
+        TrackPoint tr2 = new TrackPoint(LocalDate.of(2019, 1, 5), 5.454, -45.56);
+        TrackPoint tr3 = new TrackPoint(LocalDate.of(2020, 2, 12), 45.454, 5.56);
         Activity activity = new Activity(ActivityType.RUNNING, "Futás előre", LocalDateTime.of(2022, Month.APRIL, 18, 10, 20));
         activity.addTrackPoint(tr2);
         activity.addTrackPoint(tr3);

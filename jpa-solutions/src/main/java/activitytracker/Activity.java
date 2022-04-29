@@ -3,6 +3,7 @@ package activitytracker;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -30,15 +31,18 @@ public class Activity {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+
     @ElementCollection
     @CollectionTable(name = "labels", joinColumns = @JoinColumn(name = "id_val"))
     @Column(name = "label")
     private List<String> labels;
 
-
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, mappedBy = "activity")
     @OrderBy("time")
     private List<TrackPoint> trackPoints = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "activities")
+    private Set<Area> areas = new HashSet<>();
 
     public Activity() {
     }
@@ -126,10 +130,18 @@ public class Activity {
 
     public void addTrackPoint(TrackPoint trackPoint) {
         if (trackPoints == null) {
-            trackPoint = new TrackPoint();
+            trackPoints = new ArrayList<>();
         }
         trackPoints.add(trackPoint);
         trackPoint.setActivity(this);
+    }
+
+    public Set<Area> getAreas() {
+        return areas;
+    }
+
+    public void setAreas(Set<Area> areas) {
+        this.areas = areas;
     }
 
     @Override
