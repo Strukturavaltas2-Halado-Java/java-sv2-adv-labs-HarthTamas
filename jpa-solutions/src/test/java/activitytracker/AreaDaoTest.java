@@ -7,9 +7,11 @@ import org.junit.jupiter.api.Test;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.Comparator;
+import java.util.List;
 
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -83,4 +85,5 @@ class AreaDaoTest {
         assertThat(found.getCities().get(debrecen.getName()).getPopulation()).isEqualTo(225000);
         assertThat(found.getCities().get("Pecs").getName()).isEqualTo("Pecs");
     }
+
 }

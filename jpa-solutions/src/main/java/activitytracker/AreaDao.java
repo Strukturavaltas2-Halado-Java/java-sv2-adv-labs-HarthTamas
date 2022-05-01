@@ -2,6 +2,8 @@ package activitytracker;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import java.time.LocalDateTime;
+import java.util.List;
 
 public class AreaDao {
 
@@ -37,5 +39,4 @@ public class AreaDao {
         em.close();
         return area;
     }
-
 }
