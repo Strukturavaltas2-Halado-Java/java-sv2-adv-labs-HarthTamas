@@ -82,4 +82,13 @@ public class ActivityDao {
         em.close();
     }
 
+    public List<Object[]> findTrackPointCountByActivity() {
+        EntityManager em = factory.createEntityManager();
+        List<Object[]> result =
+                em.createQuery("select a.description, count(t) from Activity a join a.trackPoints t group by a order by a.description")
+                .getResultList();
+        em.close();
+        return result;
+    }
+
 }

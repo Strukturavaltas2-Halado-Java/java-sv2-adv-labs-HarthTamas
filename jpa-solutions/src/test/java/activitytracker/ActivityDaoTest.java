@@ -12,6 +12,7 @@ import javax.persistence.Persistence;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -145,5 +146,36 @@ class ActivityDaoTest {
         Long id = activity.getId();
         Activity activityFound = activityDao.findActivityByIdWithTrackPoints(id);
         assertThat(activityFound.getTrackPoints().get(0).getLatitude()).isEqualTo(-45.56);
+    }
+
+    @Test
+    void testFindTrackPointCountByActivity() {
+        TrackPoint tr1 = new TrackPoint(LocalDate.of(2022, 12, 12), 45.454, 15.56);
+        TrackPoint tr2 = new TrackPoint(LocalDate.of(2019, 1, 5), 5.454, -45.56);
+        TrackPoint tr3 = new TrackPoint(LocalDate.of(2020, 2, 12), 45.454, 5.56);
+        TrackPoint tr4 = new TrackPoint(LocalDate.of(2019, 1, 5), 5.454, -45.56);
+        TrackPoint tr5 = new TrackPoint(LocalDate.of(2020, 2, 12), 45.454, 5.56);
+        TrackPoint tr6 = new TrackPoint(LocalDate.of(2020, 2, 12), 45.454, 5.56);
+        Activity activityRunning = new Activity(ActivityType.RUNNING, "Futás előre", LocalDateTime.of(2022, Month.APRIL, 18, 10, 20));
+        Activity activityBiking= new Activity(ActivityType.BIKING, "Tekerünk 2 helyen", LocalDateTime.of(2022, Month.APRIL, 18, 10, 20));
+        Activity activityBiking2= new Activity(ActivityType.BIKING, "Tekerünk 3 helyen", LocalDateTime.of(2022, Month.APRIL, 18, 10, 20));
+        activityRunning.addTrackPoint(tr2);
+        activityRunning.addTrackPoint(tr3);
+        activityBiking.addTrackPoint(tr1);
+        activityBiking2.addTrackPoint(tr4);
+        activityBiking2.addTrackPoint(tr5);
+        activityBiking2.addTrackPoint(tr6);
+
+        activityDao.saveActivity(activityRunning);
+        activityDao.saveActivity(activityBiking);
+        activityDao.saveActivity(activityBiking2);
+
+        List<Object[]> result = activityDao.findTrackPointCountByActivity();
+
+        assertThat(result.size()).isEqualTo(3);
+        assertThat(result.get(0)).isEqualTo(new Object[]{"Futás előre",2L});
+        assertThat(result.get(1)).isEqualTo(new Object[]{"Tekerünk 2 helyen",1L});
+        assertThat(result.get(2)).isEqualTo(new Object[]{"Tekerünk 3 helyen",3L});
+
     }
 }
