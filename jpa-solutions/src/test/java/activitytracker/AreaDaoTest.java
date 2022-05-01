@@ -10,11 +10,10 @@ import javax.persistence.Persistence;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.Comparator;
-import java.util.Set;
-import java.util.stream.Collectors;
+
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+
 
 class AreaDaoTest {
 
@@ -32,7 +31,6 @@ class AreaDaoTest {
     @AfterEach
     void end() {
         factory.close();
-
     }
 
     @Test
@@ -68,5 +66,21 @@ class AreaDaoTest {
         assertThat(areaFound.getActivities().size()).isEqualTo(3);
         assertThat(areaFound.getActivities().stream()
                 .sorted(Comparator.comparing(Activity::getDescription)).map(Activity::getDescription).findFirst().get()).isEqualTo("Bringa körbe");
+    }
+
+    @Test
+    void testSaveAndFindAreaAndCities() {
+        Area area = new Area("Baranya");
+        City debrecen = new City("Debrecen", 225000);
+        City pecs = new City("Pecs", 178000);
+        area.getCities().put(debrecen.getName(), debrecen);
+        area.getCities().put(pecs.getName(), pecs);
+
+        areaDao.saveArea(area);
+        Long id = area.getId();
+
+        Area found = areaDao.findAreaById(id);
+        assertThat(found.getCities().get(debrecen.getName()).getPopulation()).isEqualTo(225000);
+        assertThat(found.getCities().get("Pecs").getName()).isEqualTo("Pecs");
     }
 }

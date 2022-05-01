@@ -1,7 +1,9 @@
 package activitytracker;
 
 import javax.persistence.*;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 @Entity
@@ -16,6 +18,12 @@ public class Area {
     @ManyToMany
     private Set<Activity> activities = new HashSet<>();
 
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @JoinTable(name="area_city",
+    joinColumns = @JoinColumn(name = "area_id"),
+    inverseJoinColumns = @JoinColumn(name = "city_id"))
+    @MapKey(name="name")
+    private Map<String, City> cities = new HashMap<>();
 
     public Area(String name) {
         this.name = name;
@@ -51,6 +59,14 @@ public class Area {
     public void addActivity(Activity activity) {
         activities.add(activity);
         activity.getAreas().add(this);
+    }
+
+    public Map<String, City> getCities() {
+        return cities;
+    }
+
+    public void setCities(Map<String, City> cities) {
+        this.cities = cities;
     }
 
 }
