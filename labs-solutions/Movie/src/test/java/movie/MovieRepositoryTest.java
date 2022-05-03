@@ -4,6 +4,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
@@ -32,7 +33,8 @@ class MovieRepositoryTest {
 
     @Test
     void testSaveMovie() {
-        Movie movie = repository.saveMovie(new Movie("Papirkutyák", LocalDate.of(2009, 02,19),89));
+        Movie movie = new Movie("Papirkutyák", LocalDate.of(2009, 02,19),89);;
+        repository.saveMovie(movie);
         assertThat(movie.getId()).isNotNull();
     }
 
@@ -57,5 +59,4 @@ class MovieRepositoryTest {
         assertThat(result.get(0).getRatings().size()).isEqualTo(2);
         assertThat(result.get(0).getRatings().stream().map(Rating::getUsername).toList()).isEqualTo(List.of("Kuplung","Csumpi"));
     }
-
 }

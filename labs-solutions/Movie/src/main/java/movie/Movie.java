@@ -1,5 +1,6 @@
 package movie;
 
+
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -21,7 +22,6 @@ public class Movie {
     @ElementCollection
     @CollectionTable(name="ratings", joinColumns = @JoinColumn(name="movie_id"))
     private List<Rating> ratings = new ArrayList<>();
-
 
     public void addRating(Rating rating) {
         ratings.add(rating);
