@@ -9,12 +9,18 @@ import java.util.List;
 @RestController
 public class LocationsController {
 
-    List<Location> locations = new ArrayList<>();
+    private LocationService locationService;
+
+    public LocationsController(LocationService locationService) {
+        this.locationService = locationService;
+    }
 
     @GetMapping("/locations")
     public String getLocations() {
-        locations.add(new Location(0L,"Zanzibar",0.3,1.2));
-        locations.add(new Location(0L,"Baltimore",43.1,-11.8));
-        return locations.toString();
+        StringBuilder sb = new StringBuilder();
+        for (Location actual: locationService.getLocations()) {
+            sb.append(actual);
+        }
+        return sb.toString();
     }
 }
