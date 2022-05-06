@@ -21,4 +21,14 @@ public class LocationsService {
             return Optional.of(firstLocation.distanceFrom(secondLocation));
         }
     }
+
+    public boolean isOnNorthernHemisphere(String name) {
+
+        Optional<Double> latitude = locationRepository.findLatitudeByName(name);
+        if (latitude.isEmpty()) {
+            throw new IllegalArgumentException(name + " is not on the northern hemisphere!");
+        }
+        return latitude.get()>0.0;
+//        return latitude.orElseThrow(()->new IllegalArgumentException(name + " is not on the northern hemisphere!"))>0.0;
+    }
 }
