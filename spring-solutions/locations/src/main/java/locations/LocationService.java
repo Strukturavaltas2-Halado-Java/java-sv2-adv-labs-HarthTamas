@@ -6,7 +6,10 @@ import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class LocationService {
@@ -17,16 +20,41 @@ public class LocationService {
         this.modelMapper = modelMapper;
     }
 
-    List<Location> locations = new ArrayList<>();
+    List<Location> locations = Collections.synchronizedList(new ArrayList<>(List.of(
+            new Location(1L, "Zanzibar", 0.3, 1.2),
+            new Location(2L, "Baltimore", 43.1, -11.8),
+            new Location(3L, "Budapest", 22.3, 11.2),
+            new Location(4L, "Győr", 22.0, 11.97)
+    )));
 
-    public List<LocationDto> getLocations() {
-        locations.add(new Location(0L,"Zanzibar",0.3,1.2));
-        locations.add(new Location(0L,"Baltimore",43.1,-11.8));
-        locations.add(new Location(0L,"Budapest",22.3,11.2));
-        locations.add(new Location(0L,"Győr",22.0,11.97));
 
-        Type targetListType = new TypeToken<List<LocationDto>>(){}.getType();
-        List<LocationDto> locationDtoList = modelMapper.map(locations,targetListType);
+    public List<LocationDto> getLocations(Optional<String> prefix) {
+        Type targetListType = new TypeToken<List<LocationDto>>() {}.getType();
+        List<Location> filtered = locations.stream()
+                .filter(location -> prefix.isEmpty() || location.getName().toLowerCase().startsWith(prefix.get().toLowerCase()))
+                .collect(Collectors.toList());
+        List<LocationDto> locationDtoList = modelMapper.map(filtered, targetListType);
+        return locationDtoList;
+    }
+
+    public LocationDto findLocationById(long id) {
+        return modelMapper.map(locations.stream()
+                .filter(location -> location.getId() == id)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Location not found: " + id)), LocationDto.class);
+    }
+
+    public List<LocationDto> getLocationsByAllParams(Optional<String> prefix, Optional<Double> minLat, Optional<Double> minLon,
+                                                     Optional<Double> maxLat, Optional<Double> maxLon) {
+        Type targetListType = new TypeToken<List<LocationDto>>() {}.getType();
+        List<Location> filtered = locations.stream()
+                .filter(location -> prefix.isEmpty() || location.getName().toLowerCase().startsWith(prefix.get().toLowerCase()))
+                .filter(location -> minLat.isEmpty() || location.getLat() >= minLat.get())
+                .filter(location -> minLon.isEmpty() || location.getLon() >= minLon.get())
+                .filter(location -> maxLat.isEmpty() || location.getLat() <= maxLat.get())
+                .filter(location -> maxLon.isEmpty() || location.getLon() <= maxLon.get())
+                .collect(Collectors.toList());
+        List<LocationDto> locationDtoList = modelMapper.map(filtered, targetListType);
         return locationDtoList;
     }
 }
