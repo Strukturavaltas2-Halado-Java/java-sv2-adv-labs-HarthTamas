@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 @Service
@@ -16,15 +17,17 @@ public class LocationService {
 
     private ModelMapper modelMapper;
 
+    private AtomicLong idGenerator = new AtomicLong();
+
     public LocationService(ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
     }
 
     List<Location> locations = Collections.synchronizedList(new ArrayList<>(List.of(
-            new Location(1L, "Zanzibar", 0.3, 1.2),
-            new Location(2L, "Baltimore", 43.1, -11.8),
-            new Location(3L, "Budapest", 22.3, 11.2),
-            new Location(4L, "Győr", 22.0, 11.97)
+            new Location(idGenerator.incrementAndGet(), "Zanzibar", 0.3, 1.2),
+            new Location(idGenerator.incrementAndGet(), "Baltimore", 43.1, -11.8),
+            new Location(idGenerator.incrementAndGet(), "Budapest", 22.3, 11.2),
+            new Location(idGenerator.incrementAndGet(), "Győr", 22.0, 11.97)
     )));
 
 
@@ -56,5 +59,11 @@ public class LocationService {
                 .collect(Collectors.toList());
         List<LocationDto> locationDtoList = modelMapper.map(filtered, targetListType);
         return locationDtoList;
+    }
+
+    public LocationDto createLocation(CreateLocationCommand command) {
+        Location location = new Location(idGenerator.incrementAndGet(), command.getName(),command.getLat(), command.getLon());
+        locations.add(location);
+        return modelMapper.map(location,LocationDto.class);
     }
 }

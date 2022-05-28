@@ -33,5 +33,9 @@ public class LocationsController {
         return locationService.getLocationsByAllParams(prefix,minLat,minLon,maxLat,maxLon);
     }
 
+    @PostMapping
+    public LocationDto createLocationDto(@RequestBody CreateLocationCommand command) {
+        return locationService.createLocation(command);
+    }
 
 }
