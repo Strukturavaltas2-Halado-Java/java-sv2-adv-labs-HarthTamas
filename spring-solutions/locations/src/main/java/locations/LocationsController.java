@@ -29,8 +29,8 @@ public class LocationsController {
     @GetMapping
     public List<LocationDto> getLocationsByAllParams(@RequestParam Optional<String> prefix,
                                                      @RequestParam Optional<Double> minLat, @RequestParam Optional<Double> minLon,
-                                                     @RequestParam Optional<Double> maxLat, @RequestParam Optional<Double> maxLon){
-        return locationService.getLocationsByAllParams(prefix,minLat,minLon,maxLat,maxLon);
+                                                     @RequestParam Optional<Double> maxLat, @RequestParam Optional<Double> maxLon) {
+        return locationService.getLocationsByAllParams(prefix, minLat, minLon, maxLat, maxLon);
     }
 
     @PostMapping
@@ -38,4 +38,13 @@ public class LocationsController {
         return locationService.createLocation(command);
     }
 
+    @DeleteMapping("/{id}")
+            public void deleteLocation(@PathVariable("id")long id) {
+        locationService.deleteLocation(id);
+    }
+
+    @PutMapping("/{id}")
+          public LocationDto updateLocation(@PathVariable("id") long id, @RequestBody UpdateLocationCommand command) {
+        return locationService.updateLocation(id, command);
+    }
 }
