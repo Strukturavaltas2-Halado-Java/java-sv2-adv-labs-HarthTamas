@@ -1,0 +1,18 @@
+###
+POST http://localhost:8080/api/bikerental/rentals
+Content-Type: application/json
+Accept: application/json
+
+{
+  "bikeId" : "FH631",
+  "userId" : "US346",
+  "deliveryTime": "2022-05-25T11:20:42",
+  "distance" : 2.9
+
+}
+
+###
+GET http://localhost:8080/api/bikerental/all
+Accept: application/json
+###
+
