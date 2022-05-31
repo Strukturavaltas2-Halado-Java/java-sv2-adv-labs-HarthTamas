@@ -42,15 +42,6 @@ public class BikeService {
         return new BikeRental(idGenerator.incrementAndGet(), temp[0], temp[1], LocalDateTime.parse(temp[2]), Double.parseDouble(temp[3]));
     }
 
-    public Set<BikeRentalDTO> getAllRentals() {
-        if (bikeRentals.isEmpty()) {
-            readFromFile();
-        }
-        return bikeRentals.stream()
-                .map(r -> modelMapper.map(r, BikeRentalDTO.class))
-                .collect(Collectors.toSet());
-    }
-
     public Set<String> getAllUserIds() {
         if (bikeRentals.isEmpty()) {
             readFromFile();
@@ -66,12 +57,12 @@ public class BikeService {
         return modelMapper.map(result, BikeRentalDTO.class);
     }
 
-    public Set<BikeRentalDTO> getRentalsAfterStartTime(Optional<LocalDateTime> startTime) {
+    public Set<BikeRentalDTO> getAllRental(Optional<LocalDateTime> startTime) {
         if (bikeRentals.isEmpty()) {
             readFromFile();
         }
         return bikeRentals.stream()
-                .filter(rental -> startTime.isEmpty() || rental.getDeliveryTime().isAfter(startTime.get()))
+                .filter(rental -> startTime.isEmpty() || !rental.getDeliveryTime().isBefore(startTime.get()))
                 .map(rental -> modelMapper.map(rental, BikeRentalDTO.class))
                 .collect(Collectors.toSet());
     }
@@ -80,10 +71,7 @@ public class BikeService {
         if (bikeRentals.isEmpty()) {
             readFromFile();
         }
-        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-//        modelMapper.getConfiguration().setAmbiguityIgnored(true);
 
-//        BikeRental bikeRental = new BikeRental(idGenerator.incrementAndGet(), command.getBikeId(), command.getUserId(), command.getDeliveryTime(), command.getDistance());
         BikeRental bikeRental = modelMapper.map(command, BikeRental.class);
         bikeRental.setId(idGenerator.incrementAndGet());
         bikeRentals.add(bikeRental);

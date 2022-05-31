@@ -4,6 +4,7 @@ import bikesharing.dtos.CreateBikeRentalCommand;
 import bikesharing.dtos.BikeRentalDTO;
 import bikesharing.service.BikeService;
 import lombok.AllArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -12,21 +13,14 @@ import java.util.Set;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/bikerental")
+@RequestMapping("/api/rentals")
 public class BikeController {
 
     private BikeService service;
 
-    @GetMapping("/all")
-    public Set<BikeRentalDTO> getAllRentals() {
-        return service.getAllRentals();
-    }
-
-    @GetMapping("/rentals")
-//    public Set<BikeRental> getAllRentalsAfterStartTime(@RequestParam Optional<LocalDateTime> startTime) {
-//        return service.getRentalsAfterStartTime(startTime);
-    public Set<BikeRentalDTO> getRentalsAfterStartTime(@RequestParam Optional<String> startTime) {
-        return service.getRentalsAfterStartTime(Optional.of(LocalDateTime.parse(startTime.get())));
+    @GetMapping
+    public Set<BikeRentalDTO> getAllRentalsAfterStartTime(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Optional<LocalDateTime> startTime) {
+        return service.getAllRental(startTime);
     }
 
     @GetMapping("/users")
@@ -39,7 +33,7 @@ public class BikeController {
         return service.getRentalById(id);
     }
 
-    @PostMapping("/rentals")
+    @PostMapping
     public BikeRentalDTO createRental(@RequestBody CreateBikeRentalCommand command) {
         return service.createBikeRental(command);
     }
