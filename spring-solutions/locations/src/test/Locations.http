@@ -26,5 +26,8 @@ Accept: application/json
 }
 
 ###
-DELETE http://localhost:8080/locations/2
+DELETE http://localhost:8080/locations/5
 
+###
+GET http://localhost:8080/locations/19
+Accept: application/json

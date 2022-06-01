@@ -44,7 +44,7 @@ public class LocationService {
         return modelMapper.map(locations.stream()
                 .filter(location -> location.getId() == id)
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Location not found: " + id)), LocationDto.class);
+                .orElseThrow(() -> new LocationNotFoundException(id)), LocationDto.class);
     }
 
     public List<LocationDto> getLocationsByAllParams(Optional<String> prefix, Optional<Double> minLat, Optional<Double> minLon,
@@ -70,14 +70,14 @@ public class LocationService {
     public void deleteLocation(long id) {
         Location location = locations.stream()
                 .filter(l -> l.getId()==id)
-                .findFirst().orElseThrow(()->new IllegalArgumentException("Location not found "+id));
+                .findFirst().orElseThrow(()->new LocationNotFoundException(id));
         locations.remove(location);
     }
 
     public LocationDto updateLocation(long id, UpdateLocationCommand command) {
         Location location = locations.stream()
                 .filter(l -> l.getId()==id)
-                .findFirst().orElseThrow(()->new IllegalArgumentException("Location not found "+id));
+                .findFirst().orElseThrow(()->new LocationNotFoundException(+id));
         location.setName(command.getName());
         location.setLat(command.getLat());
         location.setLon(command.getLon());
