@@ -1,3 +1,5 @@
+package team;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,10 +10,9 @@ import javax.persistence.Persistence;
 
 import java.util.List;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
-class TeamRepositoryTest {
+public class TeamRepositoryIT {
 
     EntityManagerFactory factory;
 
@@ -30,7 +31,7 @@ class TeamRepositoryTest {
 
     @Test
     void testSaveTeam() {
-        Team team = new Team("Mancheste", "UK", Class.FIRST);
+        Team team = new Team("Mancheste", "UK", TeamClass.FIRST,100_000);
         teamRepository.saveTeam(team);
         Long id = team.getId();
 
@@ -43,28 +44,28 @@ class TeamRepositoryTest {
 
     @Test
     void testFindTeamByTeamName() {
-        Team team = new Team("Manchester", "UK", Class.FIRST);
-        team.addPlayer("Diego");
-        team.addPlayer("CR07");
-        team.addPlayer("Pölöskei");
-        team.addPlayer("Gerard");
+        Team team = new Team("Manchester", "UK", TeamClass.FIRST,100_000);
+        team.addPlayer(new Player("Diego",120));
+        team.addPlayer(new Player("CR07",1200));
+        team.addPlayer(new Player("Pölöskei",20));
+        team.addPlayer(new Player("Gerard",520));
         teamRepository.saveTeam(team);
 
-        Team found = teamRepository.findTeamByTeamName("Manchester");
+        Team found = teamRepository.findTeamByNameWithPlayers("Manchester");
         assertThat(found.getCountry()).isEqualTo("UK");
         assertThat(found.getPlayers().size()).isEqualTo(4);
-        assertThat(found.getPlayers().get(0)).isEqualTo("Diego");
+        assertThat(found.getPlayers().get(0).getName()).isEqualTo("Diego");
     }
 
     @Test
     void testUpdatePointsById() {
-        Team team = new Team("Manchester", "UK", Class.FIRST);
-        team.addPlayer("Diego");
-        team.addPlayer("CR07");
-        team.addPlayer("Pölöskei");
-        team.addPlayer("Gerard");
+        Team team = new Team("Mancheste", "UK", TeamClass.FIRST,100_000);
+        team.addPlayer(new Player("Diego",120));
+        team.addPlayer(new Player("CR07",1200));
+        team.addPlayer(new Player("Pölöskei",20));
+        team.addPlayer(new Player("Gerard",520));
         teamRepository.saveTeam(team);
-        teamRepository.updatePointsById(team.getId(), 10);
+        teamRepository.addPointsToTeam(team.getId(), 10);
 
         EntityManager em = factory.createEntityManager();
         Team found = em.find(Team.class, team.getId());
@@ -75,9 +76,9 @@ class TeamRepositoryTest {
 
     @Test
     void testFindTeamsByCountryAndClass() {
-        Team team1 = new Team("Manchester", "UK", Class.FIRST);
-        Team team2 = new Team("Milan", "Italy", Class.FIRST);
-        Team team3 = new Team("Napoli", "Italy", Class.FIRST);
+        Team team1 = new Team("Manchester", "UK", TeamClass.FIRST,0);
+        Team team2 = new Team("Milan", "Italy", TeamClass.FIRST,0);
+        Team team3 = new Team("Napoli", "Italy", TeamClass.FIRST,0);
         team1.setPoints(32);
         team2.setPoints(45);
         team3.setPoints(28);
@@ -86,10 +87,9 @@ class TeamRepositoryTest {
         teamRepository.saveTeam(team2);
         teamRepository.saveTeam(team3);
 
-        List<Team> result = teamRepository.findTeamsByCountryAndClass("Italy",Class.FIRST);
+        List<Team> result = teamRepository.findTeamsByCountryAndTeamClass("Italy",TeamClass.FIRST);
         assertThat(result.size()).isEqualTo(2);
         assertThat(result.get(0).getCountry()).isEqualTo("Italy");
         assertThat(result.stream().map(Team::getName).toList()).isEqualTo(List.of("Milan","Napoli"));
     }
-
 }
