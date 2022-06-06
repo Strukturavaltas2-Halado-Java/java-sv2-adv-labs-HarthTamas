@@ -31,3 +31,14 @@ DELETE http://localhost:8080/locations/5
 ###
 GET http://localhost:8080/locations/19
 Accept: application/json
+
+### validation test
+POST http://localhost:8080/locations
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "",
+  "lat": 1223.2,
+  "lon": 121217.3
+}
