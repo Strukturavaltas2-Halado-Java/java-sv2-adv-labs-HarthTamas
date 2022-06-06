@@ -36,7 +36,7 @@ public class LocationsController {
         return locationService.getLocationsByAllParams(prefix, minLat, minLon, maxLat, maxLon);
     }
 
-    @PostMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public LocationDto createLocationDto(@RequestBody CreateLocationCommand command) {
             return locationService.createLocation(command);
