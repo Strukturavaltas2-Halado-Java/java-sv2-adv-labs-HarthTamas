@@ -64,7 +64,7 @@ public class CarService {
     public CarDTO createKilometerStatesById(long id, CreateKilometerStatesCommand command) {
         Car actual = findCarById(id);
         if (command.getValue()<actual.getLastKilometerState()) {
-            throw new KilometerStateException("Kilometerstates have to be growing");
+            throw new KilometerStateException(id);
         }
         actual.addKilometerState(new KilometerState(command.getValue(), LocalDate.now()));
         return modelMapper.map(actual, CarDTO.class);
@@ -74,7 +74,7 @@ public class CarService {
         return cars.stream()
                 .filter(car -> car.getId() == id)
                 .findFirst()
-                .orElseThrow(() -> new CarNotFoundException("Car  not found " + id));
+                .orElseThrow(() -> new CarNotFoundException(id));
     }
 
     private List<CarDTO> descSortedCars(List<Car> result) {

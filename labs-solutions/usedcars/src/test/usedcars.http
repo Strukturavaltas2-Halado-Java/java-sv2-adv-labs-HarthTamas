@@ -18,7 +18,7 @@ Accept: application/json
 ###
 
 ###
-GET http://localhost:8080/api/cars/1
+GET http://localhost:8080/api/cars/10
 Accept: application/json
 
 ###
@@ -35,10 +35,10 @@ Accept: application/json
 
 
 ###
-POST http://localhost:8080/api/cars/2/kilometer-states
+POST http://localhost:8080/api/cars/8/kilometer-states
 Content-Type: application/json
 Accept: application/json
 
 {
-  "value":199669
+  "value":19
 }
