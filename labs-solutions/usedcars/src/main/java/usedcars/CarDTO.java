@@ -20,6 +20,8 @@ public class CarDTO {
     private String type;
     private int age;
     private Condition condition;
-    private List<KilometerState> state = new ArrayList<>();
+    private List<KilometerState> states = new ArrayList<>();
+
+
 
 }

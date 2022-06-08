@@ -22,34 +22,34 @@ public class CarService {
         this.modelMapper = modelMapper;
     }
 
-    public List<CarDTO> getAllCars(Optional<String> brand, Optional<Integer> age, Optional<String> order) {
-        List<CarDTO>result = cars.stream()
-                .filter(car -> brand.isEmpty() || car.getBrand().equals(brand.get()))
-                .filter(car -> age.isEmpty() || car.getAge() == age.get())
-                .sorted(new Comparator<Car>() {
-                    @Override
-                    public int compare(Car o1, Car o2) {
-                        return o2.getStates().get(o2.getStates().size()-1).getDateOfReading()
-                                .compareTo(o1.getStates().get(o1.getStates().size()-1).getDateOfReading());
-                    }
-                })
-                .map(car -> modelMapper.map(car, CarDTO.class))
+    public List<CarDTO> getCars(Optional<String> brand, Optional<Integer> age, Optional<String> sort) {
+        List<Car> result = cars.stream()
+                .filter(car -> brand.isEmpty() || car.getBrand().toLowerCase().equals(brand.get().toLowerCase()))
+                .filter(car -> age.isEmpty() || car.getAge() <= age.get())
                 .collect(Collectors.toList());
-        return result;
+
+        if (sort.isEmpty() ||sort.get().equals("asc")) {
+            return ascSortedCars(result);
+        }
+        if (sort.isEmpty() ||sort.get().equals("desc")) {
+            return descSortedCars(result);
+        }
+        return result.stream()
+                .map(car -> modelMapper.map(car,CarDTO.class))
+                .collect(Collectors.toList());
     }
 
     public CarDTO createCar(CreateCarCommand command) {
-        Car car = modelMapper.map(command, Car.class);
-        car.setId(idGenerator.incrementAndGet());
+        Car car = new Car(idGenerator.incrementAndGet(), command.getBrand(), command.getType(), command.getAge(), command.getCondition());
+        car.addKilometerState(new KilometerState(command.getKmState(), LocalDate.now()));
         cars.add(car);
         return modelMapper.map(car, CarDTO.class);
     }
 
     public Set<String> getAllBrandsInAlphabeticalOrder() {
         return cars.stream()
-                .sorted(Comparator.comparing(Car::getBrand))
-                .map(car -> car.getBrand())
-                .collect(Collectors.toSet());
+                .map(Car::getBrand)
+                .collect(Collectors.toCollection(TreeSet::new));
     }
 
     public CarDTO getCarById(long id) {
@@ -61,16 +61,34 @@ public class CarService {
         cars.remove(findCarById(id));
     }
 
-    public CarDTO createKilometerStates(long id, CreateKilometerStatesCommand command) {
+    public CarDTO createKilometerStatesById(long id, CreateKilometerStatesCommand command) {
         Car actual = findCarById(id);
-        actual.getStates().add(new KilometerState(command.getValue(), LocalDate.now()));
-        return modelMapper.map(actual,CarDTO.class);
+        if (command.getValue()<actual.getLastKilometerState()) {
+            throw new KilometerStateException("Kilometerstates have to be growing");
+        }
+        actual.addKilometerState(new KilometerState(command.getValue(), LocalDate.now()));
+        return modelMapper.map(actual, CarDTO.class);
     }
 
     private Car findCarById(long id) {
-       return  cars.stream()
-               .filter(car -> car.getId() == id)
-               .findFirst()
-               .orElseThrow(() -> new CarNotFoundException("Car  not found " + id));
+        return cars.stream()
+                .filter(car -> car.getId() == id)
+                .findFirst()
+                .orElseThrow(() -> new CarNotFoundException("Car  not found " + id));
     }
+
+    private List<CarDTO> descSortedCars(List<Car> result) {
+        return result.stream()
+                .sorted(Comparator.comparing(Car::getLastKilometerState).reversed())
+                .map(car -> modelMapper.map(car, CarDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    private List<CarDTO> ascSortedCars(List<Car> result) {
+        return result.stream()
+                .sorted(Comparator.comparing(Car::getLastKilometerState))
+                .map(car -> modelMapper.map(car, CarDTO.class))
+                .collect(Collectors.toList());
+    }
+
 }

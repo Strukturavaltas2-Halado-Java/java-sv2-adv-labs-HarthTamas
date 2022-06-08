@@ -10,15 +10,15 @@ import java.util.Set;
 @RequestMapping("api/cars")
 public class CarController {
 
-    CarService service;
+    private CarService service;
 
     public CarController(CarService service) {
         this.service = service;
     }
 
     @GetMapping
-    public List<CarDTO> getAllCar(@RequestParam Optional<String> brand, Optional<Integer> age, Optional<String> order) {
-        return service.getAllCars(brand,age,order);
+    public List<CarDTO> getCars(@RequestParam Optional<String> brand, @RequestParam Optional<Integer> age, @RequestParam Optional<String> sort) {
+        return service.getCars(brand, age, sort);
     }
 
     @GetMapping("/brands")
@@ -33,15 +33,16 @@ public class CarController {
 
     @DeleteMapping("{id}")
     public void deleteCarById(@PathVariable long id) {
-       service.deleteCarById(id);
+        service.deleteCarById(id);
     }
 
     @PostMapping
-    public CarDTO createCar(@RequestBody CreateCarCommand command){
+    public CarDTO createCar(@RequestBody CreateCarCommand command) {
         return service.createCar(command);
     }
-    @PostMapping("/{id}/kilometerstates")
-    public CarDTO createKilometerStates(@PathVariable long id, @RequestBody CreateKilometerStatesCommand command) {
-        return service.createKilometerStates(id, command);
+
+    @PostMapping("/{id}/kilometer-states")
+    public CarDTO createKilometerStatesById(@PathVariable long id, @RequestBody CreateKilometerStatesCommand command) {
+        return service.createKilometerStatesById(id, command);
     }
 }
