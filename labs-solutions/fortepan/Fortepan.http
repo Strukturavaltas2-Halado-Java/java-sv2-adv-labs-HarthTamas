@@ -1,0 +1,32 @@
+DELETE http://localhost:8080/api/photos/11
+
+
+###
+GET http://localhost:8080/api/photos/11
+Accept: application/json
+
+###
+GET http://localhost:8080/api/photos
+Accept: application/json
+
+###
+POST http://localhost:8080/api/photos/create-description
+Content-Type: application/json
+Accept: application/json
+
+{
+  "description" : "nice photo of the sea"
+}
+###
+POST http://localhost:8080/api/photos/create-description-and-year
+Content-Type: application/json
+Accept: application/json
+
+{
+  "description" : "nice photo of the sea",
+  "year": 1192
+}
+
+
+
+
