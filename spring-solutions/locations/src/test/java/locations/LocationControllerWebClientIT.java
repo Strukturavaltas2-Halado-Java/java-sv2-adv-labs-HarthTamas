@@ -1,11 +1,9 @@
 package locations;
 
-import lombok.val;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.core.env.Environment;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.util.List;
@@ -55,12 +53,12 @@ public class LocationControllerWebClientIT {
     @Test
     void testGetLocationsByParams() {
         when(locationService.getLocationsByAllParams(any(), any(), any(), any(), any())).thenReturn(List.of(
-                new LocationDto(1L, "Zanzibar", 0.3, 1.2),
+                new LocationDto(1L, "Banzibar", 0.3, 1.2),
                 new LocationDto(2L, "Baltimore", 43.1, -11.8),
                 new LocationDto(3L, "Budapest", 22.3, 11.2)
         ));
         webTestClient.get()
-                .uri(builder -> builder.path("locations").queryParam("prefix", "Bu").build())
+                .uri(builder -> builder.path("locations").queryParam("prefix", "B").build())
                 .exchange()
                 .expectStatus().isOk()
                 .expectBodyList(LocationDto.class)
@@ -100,5 +98,19 @@ public class LocationControllerWebClientIT {
                 .exchange()
                 .expectStatus().isNoContent();
     }
+
+    @Test
+    void testCreateLocationWithInvalidData() {
+//        when(locationService.createLocation(any())).thenReturn(
+//                new LocationDto(1L, "Zanzibar", 0.3, 1.2));
+
+        webTestClient.post()
+                .uri("/locations")
+                .bodyValue(new CreateLocationCommand("", 0.3, 1.2))
+                .exchange()
+                .expectStatus().isBadRequest();
+    }
+
+
 }
 
