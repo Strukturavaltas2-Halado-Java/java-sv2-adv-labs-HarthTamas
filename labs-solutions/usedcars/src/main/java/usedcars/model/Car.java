@@ -1,46 +1,56 @@
-package usedcars;
+package usedcars.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
+@Table(name = "cars")
 public class Car {
 
-
-    private long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String brand;
     private String type;
     private int age;
-    private Condition condition;
+    @Enumerated(EnumType.STRING)
+    private CarCondition carCondition;
+
+    @ElementCollection
     private List<KilometerState> states = new ArrayList<>();
+
+
     private int lastKilometerState;
 
-    public Car(long id, String brand, String type, int age, Condition condition) {
-        this.id = id;
+    @ManyToOne
+    @JoinColumn(name = "car_seller_id")
+    private CarSeller carSeller;
+
+    public Car(String brand, String type, int age, CarCondition carCondition) {
         this.brand = brand;
         this.type = type;
         this.age = age;
-        this.condition = condition;
+        this.carCondition = carCondition;
     }
 
     public void addKilometerState(KilometerState kilometerState) {
+        lastKilometerState = kilometerState.getKilometer();
         states.add(kilometerState);
     }
 
     public int getLastKilometerState() {
-        lastKilometerState = states.get(states.size()-1).getKilometer();
         return lastKilometerState;
     }
-
 
 
 }

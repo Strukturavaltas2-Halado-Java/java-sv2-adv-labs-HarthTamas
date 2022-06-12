@@ -1,4 +1,4 @@
-package usedcars;
+package usedcars.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

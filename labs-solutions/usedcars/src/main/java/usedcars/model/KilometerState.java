@@ -1,10 +1,12 @@
-package usedcars;
+package usedcars.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -12,10 +14,12 @@ import java.util.Objects;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Embeddable
 public class KilometerState {
 
     private int kilometer;
 
+    @Column(name="date_of_reading")
     private LocalDate dateOfReading;
 
     @Override

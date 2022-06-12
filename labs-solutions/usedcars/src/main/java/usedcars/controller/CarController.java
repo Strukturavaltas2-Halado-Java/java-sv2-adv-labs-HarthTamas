@@ -1,7 +1,11 @@
-package usedcars;
+package usedcars.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import usedcars.service.CarSellingService;
+import usedcars.dtos.CarDTO;
+import usedcars.dtos.CreateCarCommand;
+import usedcars.dtos.CreateKilometerStatesCommand;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,9 +15,9 @@ import java.util.Set;
 @RequestMapping("api/cars")
 public class CarController {
 
-    private CarService service;
+    private CarSellingService service;
 
-    public CarController(CarService service) {
+    public CarController(CarSellingService service) {
         this.service = service;
     }
 

@@ -1,0 +1,88 @@
+
+###
+POST http://localhost:8080/api/cars
+Content-Type: application/json
+Accept: application/json
+
+{
+"brand":"Trabi",
+"type":"Limusine",
+"age":31,
+"carCondition":"EXCELLENT",
+"kmState": 2008
+}
+
+###
+GET http://localhost:8080/api/cars?age=31&sort=desc
+Accept: application/json
+
+###
+
+###
+GET http://localhost:8080/api/cars/1
+Accept: application/json
+
+###
+GET http://localhost:8080/api/cars?sort=desc
+Accept: application/json
+
+###
+DELETE http://localhost:8080/api/cars/1
+Accept: application/json
+
+###
+GET http://localhost:8080/api/cars/brands
+Accept: application/json
+
+
+###
+POST http://localhost:8080/api/cars/1/kilometer-states
+Content-Type: application/json
+Accept: application/json
+
+{
+  "value":10000
+}
+###
+
+POST http://localhost:8080/api/car-sellers
+Content-Type: application/json
+Accept: application/json
+
+{
+  "sellerName": "Best Car -2"
+}
+###
+
+GET http://localhost:8080/api/car-sellers
+Accept: application/json
+###
+
+POST http://localhost:8080/api/car-sellers/2/cars
+Content-Type: application/json
+Accept: application/json
+
+{
+  "brand":"Opel",
+  "type":"Limusine",
+  "age":31,
+  "carCondition":"EXCELLENT",
+  "kmState": 8
+}
+###
+
+GET http://localhost:8080/api/car-sellers/2
+Accept: application/json
+###
+
+GET http://localhost:8080/api/car-sellers/2/cars
+Accept: application/json
+###
+
+GET http://localhost:8080/api/car-sellers/2/brands
+Accept: application/json
+###
+
+DELETE http://localhost:8080/api/car-sellers/2
+Accept: application/json
+###

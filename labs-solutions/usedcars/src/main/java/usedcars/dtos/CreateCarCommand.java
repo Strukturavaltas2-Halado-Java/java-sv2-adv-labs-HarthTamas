@@ -1,12 +1,10 @@
-package usedcars;
+package usedcars.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.ArrayList;
-import java.util.List;
+import usedcars.model.CarCondition;
 
 @Getter
 @Setter
@@ -14,9 +12,10 @@ import java.util.List;
 @NoArgsConstructor
 public class CreateCarCommand {
 
+
     private String brand;
     private String type;
     private int age;
-    private Condition condition;
+    private CarCondition carCondition;
     private int kmState;
 }
