@@ -1,6 +1,6 @@
 
 ###
-GET http://localhost:8080/locations?prefix=bu&maxLat=1
+GET http://localhost:8080/locations?prefix=budape/st
 Accept: application/json
 
 ###
@@ -11,7 +11,7 @@ Accept: application/json
 {
   "name": "Budapest",
 
-  "lat": 0.2,
+  "lat": -10.2,
   "lon": 7.3
 }
 
@@ -30,7 +30,7 @@ Accept: application/json
 DELETE http://localhost:8080/locations/5
 
 ###
-GET http://localhost:8080/locations/1
+GET http://localhost:8080/locations/1567/A
 Accept: application/json
 
 ### validation test

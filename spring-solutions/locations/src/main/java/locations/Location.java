@@ -17,11 +17,7 @@ import javax.persistence.*;
 
 public class Location {
 
-    public Location(String name, double lat, double lon) {
-        this.name = name;
-        this.lat = lat;
-        this.lon = lon;
-    }
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,5 +30,11 @@ public class Location {
 
     private double lon;
 
+
+    public Location(String name, double lat, double lon) {
+        this.name = name;
+        this.lat = lat;
+        this.lon = lon;
+    }
 
 }

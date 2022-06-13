@@ -19,7 +19,7 @@ public class CreateLocationCommand {
     private String name;
 
     @Schema(description = "Latitude of the location", example = "10.3")
-    @Min(-90)
+    @Min(value = -90, message = "Lat min value: -90")
     @Max(90)
     private double lat;
 

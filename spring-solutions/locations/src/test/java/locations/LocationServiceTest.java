@@ -2,6 +2,7 @@ package locations;
 
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Optional;
 
@@ -12,7 +13,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class LocationServiceTest {
 
-    LocationService service = new LocationService(new ModelMapper());
+    @Autowired
+    LocationService service;
+
+    @Autowired
+    ModelMapper modelMapper;
 
     @Test
     void testGetLocations() {
