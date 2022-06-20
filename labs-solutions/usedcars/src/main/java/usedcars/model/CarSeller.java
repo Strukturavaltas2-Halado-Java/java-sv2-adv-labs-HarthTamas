@@ -28,7 +28,7 @@ public class CarSeller {
     @Column(name = "seller_name")
     private String sellerName;
 
-    @OneToMany(mappedBy = "carSeller")
+    @OneToMany(mappedBy = "carSeller", cascade = CascadeType.REMOVE)
     private List<Car> cars = new ArrayList<>();
 
     public void addCar(Car car) {
